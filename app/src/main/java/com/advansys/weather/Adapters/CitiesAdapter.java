@@ -1,18 +1,18 @@
 package com.advansys.weather.Adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.advansys.weather.Models.City;
 import com.advansys.weather.R;
 import com.advansys.weather.Utils;
-import com.advansys.weather.WebServices.APIs;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ import java.util.List;
 
 public class CitiesAdapter extends RecyclerView.Adapter<CitiesAdapter.CityHolder> {
 
-    private Context context;
+    private final Context context;
     public static List<City> cityList;
 
 
@@ -33,21 +33,22 @@ public class CitiesAdapter extends RecyclerView.Adapter<CitiesAdapter.CityHolder
     }
 
 
+    @NonNull
     @Override
-    public CitiesAdapter.CityHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public CitiesAdapter.CityHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View row = LayoutInflater.from(context).inflate(R.layout.recycler_item, parent, false);
-        CityHolder holder = new CityHolder(row);
-        return holder;
+        return new CityHolder(row);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(CitiesAdapter.CityHolder holder, int position) {
+    public void onBindViewHolder(@NonNull CitiesAdapter.CityHolder holder, int position) {
         City currentCity = cityList.get(position);
         holder.cityName.setText(currentCity.getCityName());
-        holder.cityTemperature.setText(String.valueOf(currentCity.getTemp()) + " " + context.getString(R.string.celisus));
-        holder.cityHumidity.setText(String.valueOf(currentCity.getHumidity()) + " " + context.getString(R.string.hPa));
-        holder.cityWindSpeed.setText(String.valueOf(currentCity.getWindSpeed()) + " " + context.getString(R.string.meter_sec));
-        holder.cityWindDegree.setText(String.valueOf(currentCity.getWindDegree()) + context.getString(R.string.degree));
+        holder.cityTemperature.setText(currentCity.getTemp() + " " + context.getString(R.string.celisus));
+        holder.cityHumidity.setText(currentCity.getHumidity() + " " + context.getString(R.string.hPa));
+        holder.cityWindSpeed.setText(currentCity.getWindSpeed() + " " + context.getString(R.string.meter_sec));
+        holder.cityWindDegree.setText(currentCity.getWindDegree() + context.getString(R.string.degree));
     }
 
     @Override
@@ -67,25 +68,19 @@ public class CitiesAdapter extends RecyclerView.Adapter<CitiesAdapter.CityHolder
         public CityHolder(View itemView) {
             super(itemView);
 
-            cityName = (TextView) itemView.findViewById(R.id.city_name_recycler);
-            cityTemperature = (TextView) itemView.findViewById(R.id.city_temperature_recycler);
-            cityHumidity = (TextView) itemView.findViewById(R.id.city_humidity_recycler);
-            cityWindSpeed = (TextView) itemView.findViewById(R.id.city_wind_speed_recycler);
-            cityWindDegree = (TextView) itemView.findViewById(R.id.city_wind_degree_recycler);
+            cityName = itemView.findViewById(R.id.city_name_recycler);
+            cityTemperature = itemView.findViewById(R.id.city_temperature_recycler);
+            cityHumidity = itemView.findViewById(R.id.city_humidity_recycler);
+            cityWindSpeed = itemView.findViewById(R.id.city_wind_speed_recycler);
+            cityWindDegree = itemView.findViewById(R.id.city_wind_degree_recycler);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    City city = cityList.get(getAdapterPosition());
-                    Utils.popUpMenu(context , city);
-                }
+            itemView.setOnClickListener(view -> {
+                City city = cityList.get(getAbsoluteAdapterPosition());
+                Utils.popUpMenu(context , city);
             });
         }
 
 
     }
-
-
-
 
 }

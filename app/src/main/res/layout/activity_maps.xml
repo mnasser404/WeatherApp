@@ -10,15 +10,14 @@
 
 
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingActionButton_hint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
         android:layout_margin="16dp"
         android:clickable="true"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
+        android:focusable="true"
         android:onClick="fabMethod"
         android:src="@drawable/ic_office"
         app:backgroundTint="#FFFFFF"

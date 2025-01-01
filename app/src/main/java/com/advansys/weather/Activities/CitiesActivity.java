@@ -1,20 +1,24 @@
 package com.advansys.weather.Activities;
 
+import static com.advansys.weather.WebServices.APIs.callingAllCities;
+
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.advansys.weather.Adapters.CitiesAdapter;
 import com.advansys.weather.Models.City;
 import com.advansys.weather.R;
 import com.advansys.weather.Utils;
 import com.advansys.weather.WebServices.APIs;
-import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +29,7 @@ import io.realm.RealmResults;
 
 public class CitiesActivity extends AppCompatActivity {
 
-    private MaterialSearchView searchView;
+    private SearchView searchView;
     private List<City> cityList;
     private Realm realm;
     private Toolbar toolbar;
@@ -42,15 +46,16 @@ public class CitiesActivity extends AppCompatActivity {
 
         // Setup UI
         Utils.setupToolbar(toolbar, this);
-        searchView = (MaterialSearchView) findViewById(R.id.search_view);
-        searchView.setCursorDrawable(R.drawable.color_cursor);
-        final RecyclerView citiesRecyclerView = (RecyclerView) findViewById(R.id.citiesRecyclerView);
+        searchView = findViewById(R.id.search_view);
+        RecyclerView citiesRecyclerView =  findViewById(R.id.citiesRecyclerView);
         citiesRecyclerView.setLayoutManager(new LinearLayoutManager(CitiesActivity.this));
 
 
-        searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+
+                callingAllCities(CitiesActivity.this, cityList, realm);
 
                 realm.beginTransaction();
 
@@ -58,11 +63,7 @@ public class CitiesActivity extends AppCompatActivity {
 
                 cityList = new ArrayList<>();
 
-                for (int i = 0; i < results.size(); i++) {
-
-                    cityList.add(results.get(i));
-
-                }
+                cityList.addAll(results);
 
                 realm.commitTransaction();
 
@@ -73,11 +74,11 @@ public class CitiesActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if (newText.length() == 0) {
+                if (newText.isEmpty()) {
                     cityList = new ArrayList<>();
                     if(Utils.checkConnection(CitiesActivity.this)) {
                         delete_rows();
-                        APIs.callingAllCities(CitiesActivity.this, cityList, realm);
+                        callingAllCities(CitiesActivity.this, cityList, realm);
                     }else {
                         Toast.makeText(CitiesActivity.this, getResources().getString(R.string.check_ur_connection), Toast.LENGTH_SHORT).show();
                     }
@@ -91,11 +92,11 @@ public class CitiesActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         getSupportActionBar().setTitle(getResources().getString(R.string.cities_list));
-        if(searchView.isSearchOpen()) {
-            searchView.closeSearch();
-        }
+//        if(searchView.isSearchOpen()) {
+//            searchView.closeSearch();
+//        }
         if(Utils.checkConnection(CitiesActivity.this)) {
-            APIs.callingAllCities(this, cityList, realm);
+            callingAllCities(this, cityList, realm);
         }else {
             Toast.makeText(CitiesActivity.this, getResources().getString(R.string.check_ur_connection), Toast.LENGTH_SHORT).show();
         }
@@ -105,7 +106,7 @@ public class CitiesActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
         MenuItem item = menu.findItem(R.id.action_search);
-        searchView.setMenuItem(item);
+//        searchView.setMenuItem(item);
         return true;
     }
 
@@ -116,12 +117,7 @@ public class CitiesActivity extends AppCompatActivity {
     }
 
     private void delete_rows() {
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                realm.delete(City.class);
-            }
-        });
+        realm.executeTransaction(realm -> realm.delete(City.class));
     }
 
 

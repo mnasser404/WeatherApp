@@ -1,9 +1,18 @@
+# Ignore IntelliJ IDEA project files
 *.iml
-.gradle
-/local.properties
-/.idea/workspace.xml
-/.idea/libraries
-.DS_Store
-/build
-/captures
-.externalNativeBuild
+.idea/
+
+# Ignore build output
+/build/
+/out/
+
+# Ignore Gradle files
+.gradle/
+/*.gradle
+
+# Ignore log files
+*.log
+
+# Ignore vcs and deploymentTargetSelector
+vcs/
+deploymentTargetSelector

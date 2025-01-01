@@ -4,11 +4,12 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.advansys.weather.Adapters.CitiesAdapter;
 import com.advansys.weather.Models.City;
@@ -134,7 +135,7 @@ public class APIs {
     }
 
     public static Bitmap createStoreMarker(Context context , String cityName) {
-        View markerLayout = ((AppCompatActivity)context).getLayoutInflater().inflate(R.layout.marker_layout, null);
+        View markerLayout = ((androidx.appcompat.app.AppCompatActivity)context).getLayoutInflater().inflate(R.layout.marker_layout, null);
 
         TextView markerRating = (TextView) markerLayout.findViewById(R.id.marker_text);
         markerRating.setText(cityName + context.getResources().getString(R.string.celisus));
